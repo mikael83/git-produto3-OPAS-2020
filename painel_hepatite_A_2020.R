@@ -63,6 +63,10 @@ library(readr)
 
 library(fs)
 
+#install.packages("stringi")
+library(stringi)
+
+
 ##############################
 #### Carregando banco SINAN - hepatite A
 
@@ -225,8 +229,9 @@ sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE 
 sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "2"] <- "Preta"
 sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "3"] <- "Amarela"
 sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "4"] <- "Parda"
+sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "5"] <- "Indígena"
 sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "9"] <- "Ignorado"
-sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "(Missing)" ] <- "Ignorado"
+sinan_2019_hepatite_A_aba2_n$CS_RACA_NE[sinan_2019_hepatite_A_aba2_n$CS_RACA_NE == "" ] <- "Ignorado"
 
 sinan_2019_hepatite_A_aba2_n$fonte <- as.character(sinan_2019_hepatite_A_aba2_n$fonte)
 
@@ -374,6 +379,27 @@ sinan_2019_hepatite_A_aba2_n$UF[sinan_2019_hepatite_A_aba2_n$UF == "51"] <- "Mat
 sinan_2019_hepatite_A_aba2_n$UF[sinan_2019_hepatite_A_aba2_n$UF == "52"] <- "Goiás"
 sinan_2019_hepatite_A_aba2_n$UF[sinan_2019_hepatite_A_aba2_n$UF == "53"] <- "Distrito Federal"
 
+##### Incluindo coluna mes 2
+
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "1"] <- "Janeiro"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "2"] <- "Fevereiro"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "3"] <- "Março"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "4"] <- "Abril"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "5"] <- "Maio"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "6"] <- "Jumho"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "7"] <- "Julho"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "8"] <- "Agosto"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "9"] <- "Setembro"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "10"] <- "Outubro"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "11"] <- "Novembro"
+sinan_2019_hepatite_A_aba1_n$mes2[sinan_2019_hepatite_A_aba1_n$mes == "12"] <- "Dezembro"
+
+sinan_2019_hepatite_A_aba1_n <- sinan_2019_hepatite_A_aba1_n %>%  rename(mes = mes2, mes2 = mes)
+
+### Calculando porcentagem da coluna n aba 1 
+
+sinan_2019_hepatite_A_aba1_n$n_pct = round(sinan_2019_hepatite_A_aba1_n$n / sum(sinan_2019_hepatite_A_aba1_n$n),digits = 4)
+
 #### Salvando tabelas do painel 
 
 write.xlsx(sinan_2019_hepatite_A_aba1_n, "C:/Users/lemos/Downloads/produtos_opas/contrato_2020/produto3/painel_hepatite_A_2020/sinan_2019_hepatite_A_aba1_n.xlsx" )
@@ -405,5 +431,21 @@ IgM_hepA_2019_reagente_filt_n$IDADE_faixa <- cut(IgM_hepA_2019_reagente_filt_n$I
 
 write.xlsx(IgM_hepA_2019_reagente_filt_n, "C:/Users/lemos/Downloads/produtos_opas/contrato_2020/produto3/painel_hepatite_A_2020/IgM_hepA_2019_reagente_filt_n.xlsx" )
 
+### Desindentificação das tabelas power bi
 
+sinan_2019_hepatite_A_aba1_n <- read.xlsx("C:/Users/lemos/Downloads/produtos_opas/contrato_2020/produto3/painel_hepatite_A_2020/sinan_2019_hepatite_A_aba1_n.xlsx" )
+
+sinan_2019_hepatite_A_aba2_n <- read.xlsx("C:/Users/lemos/Downloads/produtos_opas/contrato_2020/produto3/painel_hepatite_A_2020/sinan_2019_hepatite_A_aba2_n.xlsx" )
+set.seed(1)
+sinan_2019_hepatite_A_aba1_n$ID <- stri_rand_strings(nrow(sinan_2019_hepatite_A_aba1_n), 8)
+
+set.seed(1)
+sinan_2019_hepatite_A_aba2_n$ID <- stri_rand_strings(nrow(sinan_2019_hepatite_A_aba2_n), 8)
+
+# remover coluna NOME e NOMEMAE
+sinan_2019_hepatite_A_aba1_n <- sinan_2019_hepatite_A_aba1_n[,-1]
+sinan_2019_hepatite_A_aba1_n <- sinan_2019_hepatite_A_aba1_n[,-1]
+
+sinan_2019_hepatite_A_aba2_n <- sinan_2019_hepatite_A_aba2_n[,-1]
+sinan_2019_hepatite_A_aba2_n <- sinan_2019_hepatite_A_aba2_n[,-1]
 
